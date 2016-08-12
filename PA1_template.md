@@ -16,9 +16,8 @@ rm(datatemp)
 ```r
 day_sum <-
     data %>%
-    filter(!is.na(steps))%>%
     group_by(date)%>%
-    summarize(sum=sum(steps))
+    summarize(sum=sum(steps,na.rm=TRUE))
 ```
 2.Make a histogram of the total number of steps taken each day
 
@@ -34,8 +33,8 @@ hist(day_sum$sum,main='The total number of steps taken each day',xlab = "")
 mean_sum <- mean(day_sum$sum)
 median_sum <- median(day_sum$sum)
 ```
-The mean of steps taken per day is  1.0766189 &times; 10<sup>4</sup>.  
-The median of steps taken per day is 10765.
+The mean of steps taken per day is  9354.2295082.  
+The median of steps taken per day is 10395.
 
 ## What is the average daily activity pattern?
 1.Process the data
@@ -43,9 +42,8 @@ The median of steps taken per day is 10765.
 ```r
 interval_avg <-
     data %>%
-    filter(!is.na(steps))%>%
     group_by(interval)%>%
-    summarize(mean=mean(steps))
+    summarize(mean=mean(steps,na.rm=TRUE))
 ```
 2.Make a time series plot (i.e. type = "l") of the 5-minute interval (x-axis) and the average number of steps taken, averaged across all days (y-axis)
 
@@ -58,7 +56,7 @@ interval_avg <-
 3.Which 5-minute interval, on average across all the days in the dataset, contains the maximum number of steps?
 
 ```r
-whicMaxInterval<- interval_avg[which.max(interval_avg$mean),1][[1,1]]
+whicMaxInterval<- interval_avg[which.max(interval_avg$mean),]$interval
 ```
 835 contains the maximum number of steps.
 
@@ -97,8 +95,7 @@ hist(day_sum_filldata$sum,main='The total number of steps taken each day',xlab =
 ```
 The mean of steps taken per day is  1.0766189 &times; 10<sup>4</sup>.  
 The median of steps taken per day is 1.0766189 &times; 10<sup>4</sup>.  
-There is no difference between them.    
-The strategy is the impact of imputing missing data on the estimates of the total daily number of steps.
+Replacing NAs with the average steps for the interval raised both the number of mean and median steps.
 
 ## Are there differences in activity patterns between weekdays and weekends?
 1.Create a new factor variable in the dataset with two levels -- "weekday" and "weekend" indicating whether a given date is a weekday or weekend day
